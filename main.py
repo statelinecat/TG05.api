@@ -1,7 +1,14 @@
 import asyncio
-from aiogram import Bot, Dispatcher, types
+from aiogram import Bot, Dispatcher, types, F
 from aiogram.filters import CommandStart, Command
-from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
+from aiogram.utils.formatting import Text
+
+import logging
+from aiogram.filters.callback_data import CallbackData
+
+from keyboard import horo_kb
+
 
 import random
 import requests
@@ -10,20 +17,35 @@ from config import TOKEN
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
-zodiac_signs = [
-    ("Овен", "aries"),
-    ("Телец", "taurus"),
-    ("Близнецы", "gemini"),
-    ("Рак", "cancer"),
-    ("Лев", "leo"),
-    ("Дева", "virgo"),
-    ("Весы", "libra"),
-    ("Скорпион", "scorpio"),
-    ("Стрелец", "sagittarius"),
-    ("Козерог", "capricorn"),
-    ("Водолей", "aquarius"),
-    ("Рыбы", "pisces")
-]
+zodiacs_en = {
+    "aries",
+    "taurus",
+    "gemini",
+    "cancer",
+    "leo",
+    "virgo",
+    "libra",
+    "scorpio",
+    "sagittarius",
+    "capricorn",
+    "aquarius",
+    "pisces"
+}
+
+# @dp.register_callback_query_handler(Text(equals=zodiacs_en))
+# async def news(callback: types.CallbackQuery):
+#     await callback.answer("Гороскоп подгружается", show_alert=True)
+#     await callback.message.answer('Вот гороскоп на сегодня!')
+
+# @dp.callback_query(F.data in zodiacs_en)
+# async def news(callback: CallbackQuery):
+#    await callback.answer("Гороскоп подгружается", show_alert=True)
+#    await callback.message.answer('Вот гороскоп на сегодня!')
+
+@dp.callback_query(F.data.in_(zodiacs_en))
+async def news(callback: CallbackQuery):
+    await callback.answer("Гороскоп подгружается", show_alert=False)
+    await callback.message.answer('Вот гороскоп на сегодня!')
 
 @dp.message(Command('help'))
 async def help(message: Message):
@@ -31,10 +53,7 @@ async def help(message: Message):
 
 @dp.message(CommandStart())
 async def send_welcome(message: Message):
-    keyboard = InlineKeyboardMarkup()
-    for sign, data in zodiac_signs:
-        keyboard.add(InlineKeyboardButton(text=sign, callback_data=data))
-    await message.answer("Выберите знак зодиака:", reply_markup=keyboard)
+    await message.answer("Выберите знак зодиака:", reply_markup=await horo_kb())
 
 async def main():
     # Запуск поллинга
