@@ -16,6 +16,8 @@ from config import TOKEN
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
+horo_url = "https://ohmanda.com/api/horoscope/"
+
 
 zodiacs_en = {
     "aries",
@@ -45,7 +47,13 @@ zodiacs_en = {
 @dp.callback_query(F.data.in_(zodiacs_en))
 async def news(callback: CallbackQuery):
     await callback.answer("Гороскоп подгружается", show_alert=False)
-    await callback.message.answer('Вот гороскоп на сегодня!')
+    zodiac = callback.data
+    url = f"{horo_url}{zodiac}"
+    response = requests.get(url, verify=False)
+    data = response.json()
+    # await callback.message.answer(data['horoscope'])
+    await callback.message.answer(f'Вот гороскоп на сегодня:\n'
+                                   f'{data["horoscope"]}')
 
 @dp.message(Command('help'))
 async def help(message: Message):
