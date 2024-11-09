@@ -13,10 +13,12 @@ from keyboard import horo_kb
 import random
 import requests
 from config import TOKEN
+from googletrans import Translator
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
 horo_url = "https://ohmanda.com/api/horoscope/"
+translator = Translator()
 
 
 zodiacs_en = {
@@ -52,8 +54,10 @@ async def news(callback: CallbackQuery):
     response = requests.get(url, verify=False)
     data = response.json()
     # await callback.message.answer(data['horoscope'])
+    translation = translator.translate(data['horoscope'], dest='ru')
+    translated_text = translation.text
     await callback.message.answer(f'Вот гороскоп на сегодня:\n'
-                                   f'{data["horoscope"]}')
+                                   f'{translated_text}')
 
 @dp.message(Command('help'))
 async def help(message: Message):
