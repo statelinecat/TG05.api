@@ -3,13 +3,9 @@ from aiogram import Bot, Dispatcher, types, F
 from aiogram.filters import CommandStart, Command
 from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from aiogram.utils.formatting import Text
-
 import logging
 from aiogram.filters.callback_data import CallbackData
-
 from keyboard import horo_kb
-
-
 import random
 import requests
 from config import TOKEN
@@ -36,15 +32,6 @@ zodiacs_en = {
     "pisces"
 }
 
-# @dp.register_callback_query_handler(Text(equals=zodiacs_en))
-# async def news(callback: types.CallbackQuery):
-#     await callback.answer("Гороскоп подгружается", show_alert=True)
-#     await callback.message.answer('Вот гороскоп на сегодня!')
-
-# @dp.callback_query(F.data in zodiacs_en)
-# async def news(callback: CallbackQuery):
-#    await callback.answer("Гороскоп подгружается", show_alert=True)
-#    await callback.message.answer('Вот гороскоп на сегодня!')
 
 @dp.callback_query(F.data.in_(zodiacs_en))
 async def news(callback: CallbackQuery):
@@ -53,7 +40,6 @@ async def news(callback: CallbackQuery):
     url = f"{horo_url}{zodiac}"
     response = requests.get(url, verify=False)
     data = response.json()
-    # await callback.message.answer(data['horoscope'])
     translation = translator.translate(data['horoscope'], dest='ru')
     translated_text = translation.text
     await callback.message.answer(f'Вот гороскоп на сегодня:\n'

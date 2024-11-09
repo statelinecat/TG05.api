@@ -1,21 +1,6 @@
 from aiogram.types import  ReplyKeyboardMarkup, KeyboardButton,  InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.keyboard import  InlineKeyboardBuilder
 
-
-main = ReplyKeyboardMarkup(keyboard=[
-    [KeyboardButton(text='Привет!'), KeyboardButton(text='Пока!')]
-], resize_keyboard=True)
-
-inline_kb = InlineKeyboardMarkup(inline_keyboard=[
-    [InlineKeyboardButton(text='Новости', url='https://dzen.ru/news/')],
-    [InlineKeyboardButton(text='Музыка', url='https://zaycev.net/')],
-    [InlineKeyboardButton(text='Видео', url='https://vk.com/video')]
-])
-
-inline_kb2 = InlineKeyboardMarkup(inline_keyboard=[
-    [InlineKeyboardButton(text='Показать больше', callback_data= 'dynamic')],
-])
-
 zodiac_signs = [
     ("Овен", "aries"),
     ("Телец", "taurus"),
